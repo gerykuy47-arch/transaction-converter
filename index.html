@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Transaction Converter</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        min-height: 100vh;
+        color: #f5f7ff;
+
+        background:
+            radial-gradient(circle at 15% 20%, rgba(91, 70, 255, 0.20), transparent 30%),
+            radial-gradient(circle at 85% 80%, rgba(0, 200, 255, 0.14), transparent 30%),
+            linear-gradient(135deg, #080b16, #0c1020 50%, #070a13);
+
+        padding: 35px 20px;
+    }
+
+    .container {
+        max-width: 1250px;
+        margin: auto;
+    }
+
+    /* HEADER */
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding: 22px 26px;
+
+        background: rgba(255, 255, 255, 0.045);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+
+        backdrop-filter: blur(18px);
+        box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 22px;
+        font-weight: bold;
+
+        background: linear-gradient(135deg, #6d5dfc, #26c6ff);
+        box-shadow: 0 8px 25px rgba(74, 108, 255, 0.35);
+    }
+
+    .title h1 {
+        font-size: 22px;
+        letter-spacing: 0.3px;
+    }
+
+    .title p {
+        margin-top: 4px;
+        color: #9299ad;
+        font-size: 13px;
+    }
+
+    .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 8px 13px;
+        border-radius: 30px;
+
+        background: rgba(42, 220, 135, 0.08);
+        border: 1px solid rgba(42, 220, 135, 0.18);
+
+        color: #62e6a3;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #40e58e;
+        box-shadow: 0 0 10px #40e58e;
+    }
+
+    /* INFO */
+
+    .info {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .badge {
+        padding: 8px 12px;
+        border-radius: 10px;
+
+        background: rgba(255,255,255,0.045);
+        border: 1px solid rgba(255,255,255,0.07);
+
+        color: #aeb5c8;
+        font-size: 12px;
+    }
+
+    .badge strong {
+        color: #ffffff;
+    }
+
+    /* MAIN GRID */
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.045);
+        border: 1px solid rgba(255,255,255,0.08);
+
+        border-radius: 20px;
+        padding: 20px;
+
+        backdrop-filter: blur(18px);
+
+        box-shadow:
+            0 20px 60px rgba(0,0,0,0.22),
+            inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 13px;
+    }
+
+    .card-title {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .card-subtitle {
+        color: #737b91;
+        font-size: 11px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 470px;
+
+        resize: vertical;
+
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+
+        padding: 16px;
+
+        background: rgba(0,0,0,0.22);
+        color: #dfe5f5;
+
+        outline: none;
+
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+
+        transition: 0.2s;
+    }
+
+    textarea::placeholder {
+        color: #565e73;
+    }
+
+    textarea:focus {
+        border-color: rgba(102, 92, 255, 0.65);
+
+        box-shadow:
+            0 0 0 3px rgba(102, 92, 255, 0.10),
+            0 0 30px rgba(82, 76, 255, 0.08);
+    }
+
+    #output {
+        color: #b9f7d6;
+    }
+
+    /* BUTTONS */
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    button {
+        flex: 1;
+
+        border: none;
+        border-radius: 12px;
+
+        padding: 13px 16px;
+
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.15s,
+            box-shadow 0.15s,
+            opacity 0.15s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        opacity: 0.92;
+    }
+
+    button:active {
+        transform: translateY(0);
+    }
+
+    .btn-convert {
+        background: linear-gradient(135deg, #6658ff, #4b8dff);
+        box-shadow: 0 8px 25px rgba(78, 89, 255, 0.25);
+    }
+
+    .btn-copy {
+        background: linear-gradient(135deg, #08a878, #16c98c);
+        box-shadow: 0 8px 25px rgba(14, 190, 130, 0.18);
+    }
+
+    .btn-clear {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #c2c8d8;
+    }
+
+    /* FOOTER */
+
+    .footer {
+        text-align: center;
+        margin-top: 22px;
+        color: #555d71;
+        font-size: 11px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 850px) {
+
+        body {
+            padding: 20px 12px;
+        }
+
+        .header {
+            padding: 18px;
+        }
+
+        .status {
+            display: none;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        textarea {
+            height: 350px;
+        }
+    }
+
+    @media (max-width: 500px) {
+
+        .buttons {
+            flex-direction: column;
+        }
+
+        .title h1 {
+            font-size: 18px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="brand">
+
+            <div class="logo">
+                ZXN
+            </div>
+
+            <div class="title">
+                <h1>SELAMAT BERTUGAS</h1>
+                <p>JANGAN PERNAH BERSEMANGAT</p>
+            </div>
+
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            ONLINE
+        </div>
+
+    </div>
+
+
+    <!-- INFO -->
+
+    <div class="info">
+
+        <div class="badge">
+            Format: <strong>5 Columns</strong>
+        </div>
+
+        <div class="badge">
+            Separator: <strong>TAB</strong>
+        </div>
+
+        <div class="badge">
+            DANA: <strong>3901</strong>
+        </div>
+
+        <div class="badge">
+            GOPAY: <strong>70001</strong>
+        </div>
+
+        <div class="badge">
+            OVO: <strong>39358</strong>
+        </div>
+
+        <div class="badge">
+            LINKAJA: <strong>09110</strong>
+        </div>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="grid">
+
+        <!-- INPUT -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+                    <div class="card-title">
+                        Raw Transaction
+                    </div>
+
+                    <div class="card-subtitle">
+                        Paste data mentah dari halaman IDN
+                    </div>
+                </div>
+
+                <div class="card-subtitle">
+                    INPUT
+                </div>
+
+            </div>
+
+            <textarea
+                id="input"
+                placeholder="Paste raw transaction di sini...
+
+"></textarea>
+
+            <div class="buttons">
+
+                <button
+                    class="btn-convert"
+                    onclick="convertData()">
+                    ⚡ KONFIRMASI
+                </button>
+
+                <button
+                    class="btn-clear"
+                    onclick="clearAll()">
+                    ✕ Clear
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- OUTPUT -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <div>
+                    <div class="card-title">
+                        Converted Result
+                    </div>
+
+                    <div class="card-subtitle">
+                        Siap ditempel ke Google Sheets / DocSheet
+                    </div>
+                </div>
+
+                <div class="card-subtitle">
+                    OUTPUT
+                </div>
+
+            </div>
+
+            <textarea
+                id="output"
+                readonly
+                placeholder="Hasil conversion akan muncul di sini..."></textarea>
+
+            <div class="buttons">
+
+                <button
+                    class="btn-copy"
+                    onclick="copyResult()">
+                    📋 Copy Hasil
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        Jadikan hidupmu lebih bermakna dengan bekerja secara konsisten setiap hari, hindari malas-malasan!
+    </div>
+
+</div>
+
+
+<script>
+
+const kodeBank = {
+    "DANA": "3901",
+    "GOPAY": "70001",
+    "OVO": "39358",
+    "LINKAJA": "09110"
+};
+
+
+function convertData() {
+
+    const input = document.getElementById("input").value;
+
+    const lines = input
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line !== "");
+
+    let results = [];
+
+    let currentUser = "";
+    let currentAmount = "";
+    let currentBank = "";
+    let currentNumber = "";
+    let currentName = "";
+
+    for (let i = 0; i < lines.length; i++) {
+
+        const line = lines[i];
+
+        /*
+         * TRANSACTION START
+         */
+
+        const startMatch = line.match(/^(\d+)\s+(.+)$/);
+
+        if (startMatch) {
+
+            // Simpan transaksi sebelumnya
+            if (
+                currentBank &&
+                currentNumber &&
+                currentName
+            ) {
+
+                let finalNumber =
+                    kodeBank[currentBank]
+                        ? kodeBank[currentBank] + currentNumber
+                        : currentNumber;
+
+                results.push(
+                    [
+                        currentBank,
+                        finalNumber,
+                        currentUser,
+                        currentName,
+                        currentAmount
+                    ].join("\t")
+                );
+            }
+
+            currentUser = startMatch[2];
+
+            currentAmount = "";
+            currentBank = "";
+            currentNumber = "";
+            currentName = "";
+
+            continue;
+        }
+
+
+        /*
+         * AMOUNT
+         */
+
+        const amountMatch = line.match(
+            /\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+([\d.,]+)/
+        );
+
+        if (amountMatch) {
+
+            currentAmount = amountMatch[1];
+
+            continue;
+        }
+
+
+        /*
+         * BANK / NUMBER / NAME
+         */
+
+        const bankMatch = line.match(
+            /^([^,]+),\s*([^,]+),\s*(.+)$/
+        );
+
+        if (bankMatch) {
+
+            currentBank = bankMatch[1].trim();
+            currentNumber = bankMatch[2].trim();
+            currentName = bankMatch[3].trim();
+
+            continue;
+        }
+    }
+
+
+    /*
+     * SIMPAN TRANSAKSI TERAKHIR
+     */
+
+    if (
+        currentBank &&
+        currentNumber &&
+        currentName
+    ) {
+
+        let finalNumber =
+            kodeBank[currentBank]
+                ? kodeBank[currentBank] + currentNumber
+                : currentNumber;
+
+        results.push(
+            [
+                currentBank,
+                finalNumber,
+                currentUser,
+                currentName,
+                currentAmount
+            ].join("\t")
+        );
+    }
+
+
+    document.getElementById("output").value =
+        results.join("\n");
+}
+
+
+function copyResult() {
+
+    const output =
+        document.getElementById("output");
+
+    if (!output.value.trim()) {
+
+        alert("Belum ada hasil untuk dicopy.");
+
+        return;
+    }
+
+
+    output.select();
+    output.setSelectionRange(0, 99999);
+
+
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+
+        navigator.clipboard.writeText(output.value)
+            .then(() => {
+
+                alert("Hasil berhasil dicopy!");
+
+            })
+            .catch(() => {
+
+                fallbackCopy(output);
+
+            });
+
+    } else {
+
+        fallbackCopy(output);
+
+    }
+}
+
+
+function fallbackCopy(element) {
+
+    try {
+
+        document.execCommand("copy");
+
+        alert("Hasil berhasil dicopy!");
+
+    } catch (error) {
+
+        alert("Gagal copy. Silakan Ctrl+C secara manual.");
+
+    }
+}
+
+
+function clearAll() {
+
+    document.getElementById("input").value = "";
+
+    document.getElementById("output").value = "";
+
+}
+
+</script>
+
+</body>
+</html>
